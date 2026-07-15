@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Flex-Accountant",
   description: "#1 Job Site to Find Work From Home Jobs",
+  icons:{
+    icon:"/flex-accountant.png"
+  }
 };
 
 export default function RootLayout({
