@@ -1,0 +1,254 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum UserRole {
+  JOBSEEKER
+  EMPLOYER
+  ADMIN
+}
+
+enum JobStatus {
+  DRAFT
+  PENDING
+  ACTIVE
+  CLOSED
+  REJECTED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  REVIEWED
+  SHORTLISTED
+  INTERVIEW
+  REJECTED
+  HIRED
+}
+
+enum WorkMode {
+  REMOTE
+  HYBRID
+  ONSITE
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  FREELANCE
+  INTERNSHIP
+}
+
+enum BillingStatus {
+  FREE
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole
+  phone     String?
+  image     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobseekerProfile JobseekerProfile?
+  employerProfile  EmployerProfile?
+
+  applications Application[]
+  savedJobs    SavedJob[]
+  jobAlerts    JobAlert[]
+
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+}
+
+model JobseekerProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  headline  String?
+  location  String?
+  experience String?
+  skills    String[]
+  resumeUrl String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmployerProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  companyId   String?
+  designation String?
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [companyId], references: [id])
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  industry    String?
+  size        String?
+  website     String?
+  location    String?
+  logoUrl     String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  billingSubscription BillingSubscription?
+  invoices             Invoice[]
+
+  employers EmployerProfile[]
+  jobs      Job[]
+}
+
+
+model BillingSubscription {
+  id           String        @id @default(cuid())
+  companyId    String        @unique
+  planName     String        @default("Free Employer")
+  price        Int           @default(0)
+  currency     String        @default("USD")
+  billingCycle String        @default("Monthly")
+  status       BillingStatus @default(FREE)
+  startedAt    DateTime      @default(now())
+  endsAt       DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  companyId      String
+  subscriptionId String?
+  invoiceNumber  String        @unique
+  title          String
+  amount         Int           @default(0)
+  currency       String        @default("USD")
+  status         InvoiceStatus @default(PAID)
+  dueDate        DateTime?
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+
+  company      Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  subscription BillingSubscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+}
+
+
+model Job {
+  id             String    @id @default(cuid())
+  companyId      String
+  title          String
+  slug           String    @unique
+  category       String
+  type           JobType
+  workMode       WorkMode
+  location       String
+  experience     String?
+  salaryMin      Int?
+  salaryMax      Int?
+  salaryType     String?
+  summary        String?
+  responsibilities String?
+  requirements   String?
+  benefits       String?
+  skills         String[]
+  applyMethod    String?
+  externalApply  String?
+  deadline       DateTime?
+  status         JobStatus @default(PENDING)
+  views          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  applications Application[]
+  savedJobs    SavedJob[]
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  userId      String
+  jobId       String
+  coverLetter String?
+  resumeUrl   String?
+  status      ApplicationStatus @default(APPLIED)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+}
+
+model SavedJob {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+}
+
+model JobAlert {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  keyword   String?
+  location  String?
+  category  String?
+  frequency String   @default("Daily")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  body       String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+}

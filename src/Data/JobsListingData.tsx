@@ -1,0 +1,118 @@
+export const categories = [
+  "Accounting",
+  "Bookkeeping",
+  "Tax",
+  "Audit",
+  "Payroll",
+  "Accounts Receivable",
+  "Accounts Payable",
+  "Financial Analyst",
+  "Controller / CFO",
+  "Accounting Manager",
+  "Billing",
+  "Forensic Accounting",
+  "Cost Accounting",
+  "Public Accounting",
+  "Corporate Accounting",
+],
+
+jobs = [
+  {
+    id: 1,
+    title: "Remote Bookkeeper",
+    company: "Bright Ledger Solutions",
+    location: "Remote",
+    type: "Full Time",
+    category: "Bookkeeping",
+    salary: "$45,000 - $60,000 / year",
+    posted: "Recently uploaded",
+    slug: "remote-senior-bookkeeper",
+    description:
+      "Manage bookkeeping, bank reconciliations, expense tracking, and monthly reports for small business clients.",
+  },
+  {
+    id: 2,
+    title: "Tax Associate",
+    company: "NorthBridge CPA Group",
+    location: "Hybrid",
+    type: "Part Time",
+    category: "Tax",
+    salary: "$30 - $45 / hour",
+    posted: "2 days ago",
+    slug: "tax-associate",
+    description:
+      "Assist with tax preparation, tax compliance, client documentation, and seasonal tax support.",
+  },
+  {
+    id: 3,
+    title: "Senior Accountant",
+    company: "Flex Finance Partners",
+    location: "Remote",
+    type: "Full Time",
+    category: "Accounting",
+    salary: "$70,000 - $95,000 / year",
+    posted: "Recently uploaded",
+    slug: "senior-accountant",
+    description:
+      "Handle month-end close, general ledger review, reconciliations, financial statements, and reporting support.",
+  },
+  {
+    id: 4,
+    title: "Payroll Specialist",
+    company: "PayWorks Finance",
+    location: "Remote",
+    type: "Contract",
+    category: "Payroll",
+    salary: "$50,000 - $70,000 / year",
+    posted: "5 days ago",
+    slug: "payroll-specialist",
+    description:
+      "Process payroll, maintain payroll records, support compliance, and resolve payroll-related queries.",
+  },
+  {
+    id: 5,
+    title: "Accounts Payable Analyst",
+    company: "LedgerPro Services",
+    location: "On-site",
+    type: "Full Time",
+    category: "Accounts Payable",
+    salary: "$48,000 - $62,000 / year",
+    posted: "1 week ago",
+    slug: "accounts-payable-analyst",
+    description:
+      "Manage vendor bills, payment schedules, invoice matching, approvals, and accounts payable reporting.",
+  },
+  {
+    id: 6,
+    title: "Financial Analyst",
+    company: "GrowthPoint Finance",
+    location: "Remote",
+    type: "Full Time",
+    category: "Financial Analyst",
+    salary: "$75,000 - $100,000 / year",
+    posted: "Recently uploaded",
+    slug: "financial-analyst",
+    description:
+      "Prepare forecasts, financial models, variance analysis, and business performance reports for management.",
+  },
+];
+
+
+
+// {
+//   "title": "Remote Senior Accountant",
+//   "category": "Accounting",
+//   "type": "Full Time",
+//   "workMode": "Remote",
+//   "location": "Remote",
+//   "experience": "3 - 5 Years",
+//   "salaryMin": 70000,
+//   "salaryMax": 95000,
+//   "salaryType": "Yearly",
+//   "summary": "We are hiring a remote senior accountant.",
+//   "responsibilities": "Month-end close, reconciliations, reports.",
+//   "requirements": "QuickBooks, Excel, 3+ years experience.",
+//   "benefits": "Remote work, flexible schedule.",
+//   "skills": "QuickBooks, Excel, Reconciliation",
+//   "applyMethod": "Apply on Flex-Accountant"
+// }
