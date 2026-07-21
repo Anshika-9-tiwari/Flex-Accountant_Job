@@ -135,8 +135,7 @@ function LoginPageContent() {
                 <label className="mb-2 block text-sm font-semibold text-[#2c2935]">
                   Password
                 </label>
-
-                <div className="flex items-center rounded-xl border border-base-300 bg-white px-4">
+                <div className="flex items-center rounded-xl border border-base-300 bg-white px-4 mb-1">
                   <Lock className="mr-3 h-5 w-5 text-[#ff7900]" />
                   <input
                     type="password"
@@ -147,6 +146,14 @@ function LoginPageContent() {
                     className="w-full bg-transparent py-3 outline-none"
                   />
                 </div>
+
+                {/* Forgot Password */}
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-semibold text-[#2c2935] hover:text-[#ff7900]"
+                  >
+                    Forgot password?
+                  </Link>
               </div>
 
               <button
