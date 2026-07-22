@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link";
-import { Search, BadgeCheck } from "lucide-react";
+import { Search, BadgeCheck, Sparkles } from "lucide-react";
 
 const features = [
   {
@@ -34,11 +34,18 @@ export default function HowFlexDiff() {
 
       <section className="border-t border-transparent bg-white px-8 md:px-15 py-20">
         <div className="mx-auto max-w-7xl">
-          <h1 className="text-center font-heading text-[36px] md:text-[44px] font-bold text-[#2c2935] tracking-wide">
-            How Flex Accounting is{" "}
-            <span className="text-[#ff7900]">Different</span>
-          </h1>
-          <div className="w-30 h-1 bg-[#ff7900] mx-auto md:mx-[46%] mt-6 mb-18"></div>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full bg-[#ff7900]/10 px-4 py-2 text-sm font-bold text-[#ff7900]">
+              <Sparkles className="h-4 w-4" />
+                flex-accountant matters
+            </p>
+
+            <h2 className="font-heading text-3xl font-extrabold leading-tight text-[#24222b] sm:text-4xl md:text-[46px]">
+              How is Flex Accounting <span className="text-[#ff7900]">different?</span>
+            </h2>
+
+            <div className="mx-auto mt-6 h-1.5 w-24 rounded-full bg-[#ff7900]"/>
+          </div>
 
           <div className="mt-20 grid items-center gap-14 lg:grid-cols-2">
             <div className="space-y-10">

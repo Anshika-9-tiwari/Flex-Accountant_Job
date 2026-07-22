@@ -3,20 +3,19 @@
 import { randomBytes, createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendPasswordResetEmail } from "@/lib/emails/passwordResetEmail";
+
+export const runtime = "nodejs";
 
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
 
-function getBaseUrl(request: NextRequest) {
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  const host = forwardedHost || request.headers.get("host") || "localhost:3000";
-  const protocol =
-    request.headers.get("x-forwarded-proto") ||
-    (host.includes("localhost") ? "http" : "https");
-
-  return `${protocol}://${host}`;
+function getBaseUrl() {
+  return process.env.APP_URL || "http://localhost:3000";   
 }
+
+//  https://www.flex-accountant.com/
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,23 +29,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const safeMessage =
+      "If this email is registered, a password reset link has been sent.";
+
     const user = await prisma.user.findUnique({
       where: {
         email,
       },
       select: {
         id: true,
+        name: true,
         email: true,
         isActive: true,
       },
     });
 
-    // Always return a safe message so nobody can check which emails exist.
     if (!user || !user.isActive) {
       return NextResponse.json({
-        message:
-          "If this email is registered, a password reset link will be generated.",
-        resetLink: null,
+        message: safeMessage,
       });
     }
 
@@ -70,18 +70,40 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const resetLink = `${getBaseUrl(request)}/reset-password?token=${token}`;
+    const resetLink = `${getBaseUrl()}/reset-password?token=${token}`;
+
+    try {
+      await sendPasswordResetEmail({
+        to: user.email,
+        name: user.name,
+        resetLink,
+      });
+    } catch (emailError) {
+      console.error("Reset password email send error:", emailError);
+
+      await prisma.passwordResetToken.deleteMany({
+        where: {
+          tokenHash,
+        },
+      });
+
+      return NextResponse.json(
+        {
+          message:
+            "Unable to send reset email right now. Please check SMTP settings.",
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
-      message:
-        "Password reset link generated successfully. In production, send this link by email.",
-      resetLink,
+      message: safeMessage,
     });
   } catch (error) {
     console.error("Forgot password error:", error);
 
     return NextResponse.json(
-      { message: "Something went wrong while generating reset link." },
+      { message: "Something went wrong while generating reset email." },
       { status: 500 }
     );
   }
